@@ -2,12 +2,6 @@ package me.andreasmelone.ponevlauncher
 
 import okio.Path
 
-interface Platform {
-    val name: String
-    val homeDir: Path
-    val cacheDir: Path
-}
-
 // TODO replace String by String... or whatever varargs are in kotlin
 interface PlatformlessLogger {
     fun info(tag: String, message: String)
@@ -23,5 +17,7 @@ interface PlatformlessLogger {
     fun verbose(tag: String, message: String, ex: Exception)
 }
 
-expect val platform: Platform
 expect val logger: PlatformlessLogger
+expect val platformName: String
+expect val homeDir: Path
+expect val cacheDir: Path

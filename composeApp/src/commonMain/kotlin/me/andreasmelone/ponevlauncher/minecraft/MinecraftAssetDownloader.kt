@@ -10,8 +10,7 @@ import me.andreasmelone.ponevlauncher.logger
 import me.andreasmelone.ponevlauncher.utils.createParentDirectories
 import me.andreasmelone.ponevlauncher.utils.exists
 import me.andreasmelone.ponevlauncher.utils.sha1
-import me.andreasmelone.ponevlauncher.utils.sink
-import me.andreasmelone.ponevlauncher.utils.tryNTimes
+import me.andreasmelone.ponevlauncher.utils.bufferedSink
 import okio.Buffer
 import okio.Path
 import okio.use
@@ -22,16 +21,16 @@ import kotlin.math.round
 object MinecraftAssetDownloader {
     suspend fun setupJar(dir: Path, version: String, progressReporter: (Float) -> Unit) {
         val path = dir.resolve("client-$version.jar")
-        val versions = PistonAPI.versions()
+        val versions = Piston.versions()
         val foundVersion = requireNotNull(versions.versions.find { it.id == version }) { "invalid version: $version" }
-        val versionMeta = PistonAPI.version(foundVersion.url)
+        val versionMeta = Piston.version(version, foundVersion.url)
 
         if (path.exists() && path.sha1() == versionMeta.downloads.client.sha1) {
             logger.info("MinecraftDownloader", "Client already downloaded, skipping")
             downloadAssets(dir, versionMeta, progressReporter)
             return
         }
-        val clientJar = PistonAPI.download(versionMeta.downloads.client.url)
+        val clientJar = Piston.download(version, versionMeta.downloads.client.url)
         require(clientJar.size == versionMeta.downloads.client.size) {
             "Downloaded client jar does not match expected size of ${versionMeta.downloads.client.size}"
         }
@@ -40,7 +39,7 @@ object MinecraftAssetDownloader {
             "Downloaded client jar hash does not match expected hash of ${versionMeta.downloads.client.sha1}"
         }
         path.createParentDirectories()
-        path.sink().use { sink ->
+        path.bufferedSink().use { sink ->
             sink.write(clientJar)
         }
 
@@ -49,7 +48,7 @@ object MinecraftAssetDownloader {
 
     suspend fun downloadAssets(dir: Path, response: PistonVersionResponse, progressReporter: (percentage: Float) -> Unit) =
         withContext(Dispatchers.IO) {
-            val assetIndex = PistonAPI.assets(response.assetIndex.url).objects
+            val assetIndex = Piston.assets(response.id, response.assetIndex.url).objects
             logger.debug("Extracting", "Got asset index")
             val downloaded = AtomicInt(0)
 
@@ -63,10 +62,9 @@ object MinecraftAssetDownloader {
 
                             if (!target.exists()) {
                                 Buffer().use { buf ->
-                                    // Sometimes we have network issues so we retry a couple times
-                                    buf.write(tryNTimes(5) { ResourcesAPI.get(asset.hash.substring(0, 2), asset.hash) })
+                                    buf.write(ResourcesAPI.get(asset.hash.substring(0, 2), asset.hash))
 
-                                    target.sink().use { sink ->
+                                    target.bufferedSink().use { sink ->
                                         sink.writeAll(buf)
                                     }
                                 }

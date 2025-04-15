@@ -4,10 +4,6 @@ import android.os.Build
 import android.util.Log
 import okio.Path
 
-class AndroidPlatform(override val homeDir: Path, override val cacheDir: Path) : Platform {
-    override val name: String = "Android ${Build.VERSION.SDK_INT}"
-}
-
 object AndroidLogger : PlatformlessLogger {
     override fun info(tag: String, message: String) {
         Log.i(tag, message)
@@ -50,17 +46,9 @@ object AndroidLogger : PlatformlessLogger {
     }
 }
 
-@Volatile
-lateinit var currentPlatform: AndroidPlatform
-fun initPlatform(homeDir: Path, cacheDir: Path) {
-    currentPlatform = AndroidPlatform(homeDir, cacheDir)
-}
-
-actual val platform: Platform
-    get() {
-        if (!::currentPlatform.isInitialized) {
-            throw IllegalStateException("Platform not yet initialized!")
-        }
-        return currentPlatform
-    }
 actual val logger: PlatformlessLogger = AndroidLogger
+actual val platformName: String = "Android ${Build.VERSION.SDK_INT}"
+lateinit var homeDir0: Path
+lateinit var cacheDir0: Path
+actual val homeDir: Path get() = homeDir0
+actual val cacheDir: Path get() = cacheDir0

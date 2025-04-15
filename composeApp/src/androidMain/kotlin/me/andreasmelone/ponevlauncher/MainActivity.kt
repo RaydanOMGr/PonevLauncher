@@ -5,6 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import me.andreasmelone.ponevlauncher.utils.checkInternetConnection
+import me.andreasmelone.ponevlauncher.utils.hasInternetConnection
 import okio.Path.Companion.toPath
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +21,12 @@ class MainActivity : ComponentActivity() {
         val cacheDir = externalCacheDir?.absolutePath ?: cacheDir.absolutePath.also { path ->
             logger.error("MainActivity", "Failed to fetch cache dir! Falling back to: $path")
         }
-        initPlatform(dataDir.toPath(), cacheDir.toPath())
+        homeDir0 = dataDir.toPath()
+        cacheDir0 = cacheDir.toPath()
+
+        runBlocking {
+            checkInternetConnection()
+        }
 
         setContent {
             App()

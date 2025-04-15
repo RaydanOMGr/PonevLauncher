@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.andreasmelone.ponevlauncher.minecraft.MinecraftAssetDownloader
-import me.andreasmelone.ponevlauncher.minecraft.PistonAPI
+import me.andreasmelone.ponevlauncher.minecraft.Piston
 import me.andreasmelone.ponevlauncher.minecraft.PistonVersion
 import me.andreasmelone.ponevlauncher.ui.LauncherTheme
 import me.andreasmelone.ponevlauncher.utils.state
@@ -41,7 +41,7 @@ fun App() {
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        val versions = PistonAPI.versions()
+        val versions = Piston.versions()
 
         options = versions.versions
             .filter { version ->
@@ -79,9 +79,9 @@ fun App() {
                             coroutineScope.launch {
                                 val selected = selectedOption ?: return@launch
                                 progress = 0f
-                                MinecraftAssetDownloader.setupJar(platform.homeDir, selected) { progress = it }
+                                MinecraftAssetDownloader.setupJar(homeDir, selected) { progress = it }
                                 isEnabled = true
-                                logger.info("Main", "Downloaded jar!")
+                                logger.info("Ponev", "Jar and assets set up!")
                             }
                         },
                         enabled = isEnabled,

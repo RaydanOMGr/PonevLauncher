@@ -6,4 +6,4 @@ todo:
 - [x] implement proper downloading
 - [ ] implement integrity checking
 - [ ] implement launching (literally top 1 priority)
-- [ ] implement piston meta caching
+- [x] implement piston meta caching

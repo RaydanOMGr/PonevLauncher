@@ -10,23 +10,6 @@ import platform.Foundation.NSUserDomainMask
 import platform.UIKit.UIDevice
 import kotlin.experimental.ExperimentalNativeApi
 
-class IOSPlatform : Platform {
-    override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
-    override val homeDir: Path
-    override val cacheDir: Path
-
-    init {
-        val fileManager = NSFileManager.defaultManager()
-
-        val documentUrls = fileManager.URLsForDirectory(NSDocumentDirectory, inDomains = NSUserDomainMask)
-        val documentDirectoryURL = documentUrls.firstOrNull() as NSURL?
-        val rootHomeDir = (documentDirectoryURL?.path ?: "").toPath()
-
-        homeDir = rootHomeDir/"files"
-        cacheDir = rootHomeDir/"cache"
-    }
-}
-
 object IOSLogger : PlatformlessLogger {
     @OptIn(ExperimentalNativeApi::class)
     private val debug: Boolean = kotlin.native.Platform.isDebugBinary
@@ -40,7 +23,7 @@ object IOSLogger : PlatformlessLogger {
     }
 
     override fun debug(tag: String, message: String) {
-        if(debug) NSLog("DEBUG | [$tag] $message")
+        if (debug) NSLog("DEBUG | [$tag] $message")
     }
 
     override fun debug(tag: String, message: String, ex: Exception) {
@@ -64,7 +47,7 @@ object IOSLogger : PlatformlessLogger {
     }
 
     override fun verbose(tag: String, message: String) {
-        if(debug) NSLog("VERBOSE | [$tag] $message")
+        if (debug) NSLog("VERBOSE | [$tag] $message")
     }
 
     override fun verbose(tag: String, message: String, ex: Exception) {
@@ -72,5 +55,11 @@ object IOSLogger : PlatformlessLogger {
     }
 }
 
-actual val platform: Platform = IOSPlatform()
 actual val logger: PlatformlessLogger = IOSLogger
+actual val platformName: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
+private val fileManager = NSFileManager.defaultManager()
+private val documentUrls = fileManager.URLsForDirectory(NSDocumentDirectory, inDomains = NSUserDomainMask)
+private val documentDirectoryURL = documentUrls.firstOrNull() as NSURL?
+private val rootHomeDir = (documentDirectoryURL?.path ?: "").toPath()
+actual val homeDir: Path = rootHomeDir / "files"
+actual val cacheDir: Path = rootHomeDir / "cache"
