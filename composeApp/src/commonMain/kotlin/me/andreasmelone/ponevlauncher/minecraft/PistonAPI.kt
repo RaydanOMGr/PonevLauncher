@@ -29,7 +29,7 @@ val client = HttpClient(CIO) {
     }
 
     install(HttpTimeout) {
-        connectTimeoutMillis = 25000
+        connectTimeoutMillis = 60000
     }
 
     install(HttpRequestRetry) {

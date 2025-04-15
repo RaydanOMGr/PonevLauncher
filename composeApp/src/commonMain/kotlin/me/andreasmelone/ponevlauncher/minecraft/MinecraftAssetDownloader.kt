@@ -27,7 +27,7 @@ object MinecraftAssetDownloader {
 
         if (path.exists() && path.sha1() == versionMeta.downloads.client.sha1) {
             logger.info("MinecraftDownloader", "Client already downloaded, skipping")
-            downloadAssets(dir, versionMeta, progressReporter)
+            downloadAssets(dir / "assets" / "objects", versionMeta, progressReporter)
             return
         }
         val clientJar = Piston.download(version, versionMeta.downloads.client.url)
@@ -43,7 +43,7 @@ object MinecraftAssetDownloader {
             sink.write(clientJar)
         }
 
-        downloadAssets(dir, versionMeta, progressReporter)
+        downloadAssets(dir / "assets" / "objects", versionMeta, progressReporter)
     }
 
     suspend fun downloadAssets(dir: Path, response: PistonVersionResponse, progressReporter: (percentage: Float) -> Unit) =
