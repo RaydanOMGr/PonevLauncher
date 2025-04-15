@@ -1,5 +1,6 @@
 package me.andreasmelone.mojolauncher.minecraft
 
+import io.ktor.util.sha1
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.coroutineScope
@@ -14,7 +15,6 @@ import me.andreasmelone.mojolauncher.utils.tryNTimes
 import okio.Buffer
 import okio.Path
 import okio.use
-import org.kotlincrypto.hash.sha1.SHA1
 import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.incrementAndFetch
 import kotlin.math.round
@@ -35,7 +35,7 @@ object MinecraftAssetDownloader {
         require(clientJar.size == versionMeta.downloads.client.size) {
             "Downloaded client jar does not match expected size of ${versionMeta.downloads.client.size}"
         }
-        val actualHash = SHA1().digest(clientJar).toHexString()
+        val actualHash = sha1(clientJar).toHexString()
         require(actualHash == versionMeta.downloads.client.sha1) {
             "Downloaded client jar hash does not match expected hash of ${versionMeta.downloads.client.sha1}"
         }
