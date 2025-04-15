@@ -35,10 +35,9 @@ interface PistonAPI {
     @GET
     suspend fun assets(@Url url: String): PistonAssetIndexResponse
 
-    @Suppress("DEPRECATION")
     companion object : PistonAPI by Ktorfit.Builder()
         .baseUrl("https://piston-meta.mojang.com/")
         .httpClient(client)
         .build()
-        .create()
+        .createPistonAPI()
 }
