@@ -1,10 +1,11 @@
-package me.andreasmelone.mojolauncher
+package me.andreasmelone.ponevlauncher
 
 import okio.Path
 
 interface Platform {
     val name: String
     val homeDir: Path
+    val cacheDir: Path
 }
 
 // TODO replace String by String... or whatever varargs are in kotlin

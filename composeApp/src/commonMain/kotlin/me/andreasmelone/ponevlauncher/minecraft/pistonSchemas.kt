@@ -1,4 +1,4 @@
-package me.andreasmelone.mojolauncher.minecraft
+package me.andreasmelone.ponevlauncher.minecraft
 
 import kotlinx.serialization.Serializable
 

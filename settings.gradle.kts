@@ -1,4 +1,4 @@
-rootProject.name = "MojoLauncher"
+rootProject.name = "PonevLauncher"
 
 pluginManagement {
     repositories {

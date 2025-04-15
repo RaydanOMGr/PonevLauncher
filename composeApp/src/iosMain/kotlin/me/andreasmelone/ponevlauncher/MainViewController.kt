@@ -1,4 +1,4 @@
-package me.andreasmelone.mojolauncher
+package me.andreasmelone.ponevlauncher
 
 import androidx.compose.ui.window.ComposeUIViewController
 

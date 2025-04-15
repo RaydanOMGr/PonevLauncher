@@ -1,4 +1,4 @@
-package me.andreasmelone.mojolauncher.utils
+package me.andreasmelone.ponevlauncher.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisallowComposableCalls

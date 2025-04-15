@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalStdlibApi::class)
 
-package me.andreasmelone.mojolauncher.utils
+package me.andreasmelone.ponevlauncher.utils
 
 import io.ktor.util.sha1
 import okio.BufferedSink

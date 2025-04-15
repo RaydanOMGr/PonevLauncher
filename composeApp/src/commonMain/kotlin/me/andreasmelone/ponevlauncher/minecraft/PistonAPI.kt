@@ -1,4 +1,4 @@
-package me.andreasmelone.mojolauncher.minecraft
+package me.andreasmelone.ponevlauncher.minecraft
 
 import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.http.GET

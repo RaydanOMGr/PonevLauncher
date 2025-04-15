@@ -1,9 +1,9 @@
-package me.andreasmelone.mojolauncher.ui
+package me.andreasmelone.ponevlauncher.ui
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.material.MaterialTheme
 
 val LightGreen = Color(0xff90ceaa)
 val LightBlue = Color(0xff86aaec)

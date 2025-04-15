@@ -65,9 +65,9 @@ val dateSeconds = if (System.getenv("GITHUB_ACTIONS") == "true") {
 fun appVersionName(): String {
     val currentBranch = grgit?.branch?.current()
     val latestCommit = grgit?.log(mapOf("maxCommits" to 1))?.get(0)
-    val dateToday = date;
+    val dateToday = date
     if (currentBranch == null || latestCommit == null) {
-        return "LOCAL-${dateToday}";
+        return "LOCAL-${dateToday}"
     } else {
         val branchName = currentBranch.getName()
         val commitAbbreviation = latestCommit.abbreviatedId
@@ -142,7 +142,7 @@ kotlin {
 }
 
 android {
-    namespace = "me.andreasmelone.mojolauncher"
+    namespace = "me.andreasmelone.ponevlauncher"
     compileSdk = 35
 
     lint {
@@ -150,7 +150,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "me.andreasmelone.mojolauncher"
+        applicationId = "me.andreasmelone.ponevlauncher"
         minSdk = 26
         targetSdk = 35
         versionCode = dateSeconds
@@ -175,8 +175,8 @@ android {
             isShrinkResources = false
             proguardFiles.addAll(listOf(getDefaultProguardFile("proguard-android-optimize.txt"), file("proguard-rules.pro")))
             signingConfig = signingConfigs["customDebug"]
-            resValue("string", "application_package", "me.andreasmelone.mojolauncher.debug")
-            resValue("string", "storageProviderAuthorities", "me.andreasmelone.mojolauncher.scoped.gamefolder.debug")
+            resValue("string", "application_package", "me.andreasmelone.ponevlauncher.debug")
+            resValue("string", "storageProviderAuthorities", "me.andreasmelone.ponevlauncher.scoped.gamefolder.debug")
         }
         create("proguard") {
             initWith(buildTypes["debug"])
@@ -194,8 +194,8 @@ android {
             // defaultConfig already set
             // multiDexEnabled = true
             // debuggable = true
-            resValue("string", "storageProviderAuthorities", "git.artdeell.mojo.scoped.gamefolder")
-            resValue("string", "application_package", "git.artdeell.mojo")
+            resValue("string", "application_package", "me.andreasmelone.ponevlauncher")
+            resValue("string", "storageProviderAuthorities", "me.andreasmelone.ponevlauncher.scoped.gamefolder")
         }
     }
 

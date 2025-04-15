@@ -1,4 +1,4 @@
-package me.andreasmelone.mojolauncher
+package me.andreasmelone.ponevlauncher
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,11 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import me.andreasmelone.mojolauncher.minecraft.MinecraftAssetDownloader
-import me.andreasmelone.mojolauncher.minecraft.PistonAPI
-import me.andreasmelone.mojolauncher.minecraft.PistonVersion
-import me.andreasmelone.mojolauncher.ui.LauncherTheme
-import me.andreasmelone.mojolauncher.utils.state
+import me.andreasmelone.ponevlauncher.minecraft.MinecraftAssetDownloader
+import me.andreasmelone.ponevlauncher.minecraft.PistonAPI
+import me.andreasmelone.ponevlauncher.minecraft.PistonVersion
+import me.andreasmelone.ponevlauncher.ui.LauncherTheme
+import me.andreasmelone.ponevlauncher.utils.state
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

@@ -1,4 +1,4 @@
-package me.andreasmelone.mojolauncher.minecraft
+package me.andreasmelone.ponevlauncher.minecraft
 
 import io.ktor.util.sha1
 import kotlinx.coroutines.Dispatchers
@@ -6,12 +6,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.andreasmelone.mojolauncher.logger
-import me.andreasmelone.mojolauncher.utils.createParentDirectories
-import me.andreasmelone.mojolauncher.utils.exists
-import me.andreasmelone.mojolauncher.utils.sha1
-import me.andreasmelone.mojolauncher.utils.sink
-import me.andreasmelone.mojolauncher.utils.tryNTimes
+import me.andreasmelone.ponevlauncher.logger
+import me.andreasmelone.ponevlauncher.utils.createParentDirectories
+import me.andreasmelone.ponevlauncher.utils.exists
+import me.andreasmelone.ponevlauncher.utils.sha1
+import me.andreasmelone.ponevlauncher.utils.sink
+import me.andreasmelone.ponevlauncher.utils.tryNTimes
 import okio.Buffer
 import okio.Path
 import okio.use

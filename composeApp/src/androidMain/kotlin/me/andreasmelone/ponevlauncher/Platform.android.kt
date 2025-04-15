@@ -1,10 +1,10 @@
-package me.andreasmelone.mojolauncher
+package me.andreasmelone.ponevlauncher
 
 import android.os.Build
 import android.util.Log
 import okio.Path
 
-class AndroidPlatform(override val homeDir: Path) : Platform {
+class AndroidPlatform(override val homeDir: Path, override val cacheDir: Path) : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"
 }
 
@@ -52,8 +52,8 @@ object AndroidLogger : PlatformlessLogger {
 
 @Volatile
 lateinit var currentPlatform: AndroidPlatform
-fun initPlatform(homeDir: Path) {
-    currentPlatform = AndroidPlatform(homeDir)
+fun initPlatform(homeDir: Path, cacheDir: Path) {
+    currentPlatform = AndroidPlatform(homeDir, cacheDir)
 }
 
 actual val platform: Platform

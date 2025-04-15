@@ -1,4 +1,4 @@
-package me.andreasmelone.mojolauncher
+package me.andreasmelone.ponevlauncher
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +13,10 @@ class MainActivity : ComponentActivity() {
         val dataDir = getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath.also { path ->
             logger.error("MainActivity", "Failed to fetch data dir! Falling back to: $path")
         }
-        initPlatform(dataDir.toPath())
+        val cacheDir = externalCacheDir?.absolutePath ?: cacheDir.absolutePath.also { path ->
+            logger.error("MainActivity", "Failed to fetch cache dir! Falling back to: $path")
+        }
+        initPlatform(dataDir.toPath(), cacheDir.toPath())
 
         setContent {
             App()
