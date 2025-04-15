@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import okio.Path.Companion.toPath
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,7 +13,7 @@ class MainActivity : ComponentActivity() {
         val dataDir = getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath.also { path ->
             logger.error("MainActivity", "Failed to fetch data dir! Falling back to: $path")
         }
-        initPlatform(dataDir)
+        initPlatform(dataDir.toPath())
 
         setContent {
             App()

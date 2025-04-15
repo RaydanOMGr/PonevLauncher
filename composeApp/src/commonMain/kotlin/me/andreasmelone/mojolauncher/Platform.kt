@@ -1,10 +1,10 @@
 package me.andreasmelone.mojolauncher
 
-import kotlinx.serialization.json.Json
+import okio.Path
 
 interface Platform {
     val name: String
-    val homeDir: String
+    val homeDir: Path
 }
 
 // TODO replace String by String... or whatever varargs are in kotlin
@@ -24,4 +24,3 @@ interface PlatformlessLogger {
 
 expect val platform: Platform
 expect val logger: PlatformlessLogger
-val json = Json { ignoreUnknownKeys = true }

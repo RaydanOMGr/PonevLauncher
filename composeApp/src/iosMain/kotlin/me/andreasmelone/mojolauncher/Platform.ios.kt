@@ -1,5 +1,7 @@
 package me.andreasmelone.mojolauncher
 
+import okio.Path
+import okio.Path.Companion.toPath
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSLog
@@ -10,14 +12,14 @@ import kotlin.experimental.ExperimentalNativeApi
 
 class IOSPlatform : Platform {
     override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
-    override val homeDir: String
+    override val homeDir: Path
 
     init {
         val fileManager = NSFileManager.defaultManager()
         val urls = fileManager.URLsForDirectory(NSDocumentDirectory, inDomains = NSUserDomainMask)
         val documentDirectoryURL = urls.firstOrNull() as NSURL?
 
-        homeDir = documentDirectoryURL?.path ?: ""
+        homeDir = (documentDirectoryURL?.path ?: "").toPath()
     }
 }
 

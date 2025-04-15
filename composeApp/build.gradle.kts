@@ -1,60 +1,90 @@
 import org.ajoberstar.grgit.Grgit
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 plugins {
-    kotlin("plugin.serialization") version "2.1.0"
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    id("de.undercouch.download") version "5.6.0"
-    id("org.ajoberstar.grgit") version "4.1.1"
+    alias(libs.plugins.kmp)
+    alias(libs.plugins.android.app)
+    alias(libs.plugins.cmp)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.download)
+    alias(libs.plugins.grgit)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.ktorfit)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
-val grgit = if (extra.has("grgit")) null else the<Grgit>()
-
-val date: String
-    get() = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-
-val dateSeconds: Int
-    get() =
-        if (System.getenv("GITHUB_ACTIONS") == "true") {
-            Integer.parseInt(System.getenv("GITHUB_RUN_NUMBER"))
-        } else {
-            172005
+// Dependencies
+kotlin {
+    sourceSets {
+        androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.kotlinx.coroutines.android)
         }
-
-val appVersionName: String
-    get() {
-        val currentBranch = grgit?.branch?.current()
-        val latestCommit = grgit?.log(mapOf("maxCommits" to 1))?.get(0)
-        val dateToday = date;
-        if(currentBranch == null || latestCommit == null) {
-            return "LOCAL-${dateToday}";
-        } else {
-            val branchName = currentBranch.getName()
-            val commitAbbreviation = latestCommit.abbreviatedId
-            return "hebe-${dateToday}-${commitAbbreviation}-${branchName}"
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            implementation(kotlincrypto.hash.sha1)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.bundles.ktor)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.io.core)
+            implementation(libs.okio)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
+}
 
-val cfApiKey: String
-    get() {
-        val key = System.getenv("CURSEFORGE_API_KEY")
-        if (key != null) return key
-        val curseforgeKeyFile = File("./curseforge_key.txt")
-        if (curseforgeKeyFile.canRead() && curseforgeKeyFile.isFile) {
-            return curseforgeKeyFile.readText()
-        }
-        logger.warn("BUILD: You have no CurseForge key, the curseforge api will get disabled !")
-        return "DUMMY"
+dependencies {
+    debugImplementation(compose.uiTooling)
+}
+
+// Versioning
+
+val grgit = if (extra.has("grgit")) {
+    the<Grgit>()
+} else {
+    null
+}
+val date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+val dateSeconds = if (System.getenv("GITHUB_ACTIONS") == "true") {
+    Integer.parseInt(System.getenv("GITHUB_RUN_NUMBER"))
+} else {
+    172005
+}
+
+fun appVersionName(): String {
+    val currentBranch = grgit?.branch?.current()
+    val latestCommit = grgit?.log(mapOf("maxCommits" to 1))?.get(0)
+    val dateToday = date;
+    if (currentBranch == null || latestCommit == null) {
+        return "LOCAL-${dateToday}";
+    } else {
+        val branchName = currentBranch.getName()
+        val commitAbbreviation = latestCommit.abbreviatedId
+        return "hebe-${dateToday}-${commitAbbreviation}-${branchName}"
     }
+}
 
-configurations {
-
+fun cfApiKey(): String {
+    val key = System.getenv("CURSEFORGE_API_KEY")
+    if (key != null) return key
+    val curseforgeKeyFile = File("./curseforge_key.txt")
+    if (curseforgeKeyFile.canRead() && curseforgeKeyFile.isFile) {
+        return curseforgeKeyFile.readText()
+    }
+    logger.warn("You have no CurseForge key, the curseforge api will be disabled!")
+    return ""
 }
 
 kotlin {
@@ -63,7 +93,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_1_8)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -101,6 +131,16 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
     }
+
+    compilerOptions {
+        freeCompilerArgs.addAll(listOf(
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi",
+            "-opt-in=kotlin.contracts.ExperimentalContracts",
+            "-opt-in=kotlin.ExperimentalStdlibApi",
+            "-opt-in=kotlin.concurrent.atomics.ExperimentalAtomicApi"
+        ))
+    }
 }
 
 android {
@@ -113,12 +153,12 @@ android {
 
     defaultConfig {
         applicationId = "me.andreasmelone.mojolauncher"
-        minSdk = 21
+        minSdk = 26
         targetSdk = 35
         versionCode = dateSeconds
-        versionName = appVersionName
+        versionName = appVersionName()
         multiDexEnabled = true
-        resValue("string", "curseforge_api_key", cfApiKey)
+        resValue("string", "curseforge_api_key", cfApiKey())
     }
 
     signingConfigs {
@@ -151,7 +191,6 @@ android {
         }
 
         release {
-            // Don"t set to true or java.awt will be a.a or something similar.
             isMinifyEnabled = false
             proguardFiles.addAll(listOf(getDefaultProguardFile("proguard-android.txt"), file("proguard-rules.pro")))
             // defaultConfig already set
@@ -180,8 +219,3 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
-
-dependencies {
-    debugImplementation(compose.uiTooling)
-}
-

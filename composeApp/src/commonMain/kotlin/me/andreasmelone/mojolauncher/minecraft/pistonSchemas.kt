@@ -24,7 +24,8 @@ data class PistonVersionsResponse(
 @Serializable
 data class PistonVersionResponse(
     val id: String,
-    val downloads: PistonVersionDownloads
+    val downloads: PistonVersionDownloads,
+    val assetIndex: PistonAssetIndex,
 )
 
 @Serializable
@@ -38,4 +39,20 @@ data class PistonVersionDownload(
     val size: Int,
     val url: String,
     val sha1: String,
+)
+
+@Serializable
+data class PistonAssetIndex(
+    val url: String,
+)
+
+@Serializable
+data class PistonAsset(
+    val hash: String,
+    val size: Int
+)
+
+@Serializable
+data class PistonAssetIndexResponse(
+    val objects: Map<String, PistonAsset>
 )
