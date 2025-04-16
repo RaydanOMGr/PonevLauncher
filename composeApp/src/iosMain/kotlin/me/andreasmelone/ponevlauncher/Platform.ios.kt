@@ -12,7 +12,7 @@ import kotlin.experimental.ExperimentalNativeApi
 
 object IOSLogger : PlatformlessLogger {
     @OptIn(ExperimentalNativeApi::class)
-    private val debug: Boolean = kotlin.native.Platform.isDebugBinary
+    private val debug: Boolean = Platform.isDebugBinary
 
     override fun info(tag: String, message: String) {
         NSLog("INFO | [$tag] $message")

@@ -61,7 +61,7 @@ fun App() {
 
                     if (progress > 0) {
                         Text(
-                            "Downloading assets: $progress%",
+                            "Downloading Minecraft: $progress%",
                             modifier = Modifier
                                 .padding(bottom = 5.dp)
                         )

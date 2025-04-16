@@ -21,11 +21,12 @@ data class PistonVersionsResponse(
     val versions: List<PistonVersion>,
 )
 
-@Serializable
+    @Serializable
 data class PistonVersionResponse(
     val id: String,
     val downloads: PistonVersionDownloads,
     val assetIndex: PistonAssetIndex,
+    val libraries: List<PistonLibrary>
 )
 
 @Serializable
@@ -55,4 +56,35 @@ data class PistonAsset(
 @Serializable
 data class PistonAssetIndexResponse(
     val objects: Map<String, PistonAsset>
+)
+
+@Serializable
+data class PistonLibraryDownloads(
+    val artifact: PistonLibraryArtifact
+)
+
+@Serializable
+data class PistonLibraryArtifact(
+    val path: String,
+    val sha1: String,
+    val size: Int,
+    val url: String
+)
+
+@Serializable
+data class PistonLibrary(
+    val downloads: PistonLibraryDownloads,
+    val name: String,
+    val rules: List<PistonLibraryRule> = listOf()
+)
+
+@Serializable
+data class PistonLibraryRule(
+    val action: String,
+    val os: PistonOsObject
+)
+
+@Serializable
+data class PistonOsObject(
+    val name: String
 )
