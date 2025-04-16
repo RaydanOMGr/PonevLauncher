@@ -1,54 +1,45 @@
 package me.andreasmelone.ponevlauncher
 
-import android.os.Build
-import android.util.Log
-import okio.Path
+import org.slf4j.LoggerFactory.getLogger
 
-object AndroidLogger : PlatformlessLogger {
+object DesktopLogger : PlatformlessLogger {
     override fun info(tag: String, message: String) {
-        Log.i(tag, message)
+        getLogger(tag).info(message)
     }
 
     override fun info(tag: String, message: String, ex: Exception) {
-        Log.i(tag, message, ex)
+        getLogger(tag).info(message, ex)
     }
 
     override fun debug(tag: String, message: String) {
-        Log.d(tag, message)
+        getLogger(tag).debug(message)
     }
 
     override fun debug(tag: String, message: String, ex: Exception) {
-        Log.d(tag, message, ex)
+        getLogger(tag).debug(message, ex)
     }
 
     override fun warn(tag: String, message: String) {
-        Log.w(tag, message)
+        getLogger(tag).warn(message)
     }
 
     override fun warn(tag: String, message: String, ex: Exception) {
-        Log.w(tag, message, ex)
+        getLogger(tag).warn(message, ex)
     }
 
     override fun error(tag: String, message: String) {
-        Log.e(tag, message)
+        getLogger(tag).error(message)
     }
 
     override fun error(tag: String, message: String, ex: Exception) {
-        Log.e(tag, message, ex)
+        getLogger(tag).error(message, ex)
     }
 
     override fun verbose(tag: String, message: String) {
-        Log.v(tag, message)
+        getLogger(tag).trace(message)
     }
 
     override fun verbose(tag: String, message: String, ex: Exception) {
-        Log.v(tag, message, ex)
+        getLogger(tag).trace(message, ex)
     }
 }
-
-actual val logger: PlatformlessLogger = AndroidLogger
-actual val platformName: String = "Android ${Build.VERSION.SDK_INT}"
-lateinit var dataDir0: Path
-lateinit var cacheDir0: Path
-actual val dataDir: Path get() = dataDir0
-actual val cacheDir: Path get() = cacheDir0

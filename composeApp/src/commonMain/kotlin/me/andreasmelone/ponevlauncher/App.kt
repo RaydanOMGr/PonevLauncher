@@ -79,7 +79,7 @@ fun App() {
                             coroutineScope.launch {
                                 val selected = selectedOption ?: return@launch
                                 progress = 0f
-                                MinecraftAssetDownloader.setupJar(homeDir, selected) { progress = it }
+                                MinecraftAssetDownloader.setupJar(dataDir, selected) { progress = it }
                                 isEnabled = true
                                 logger.info("Ponev", "Jar and assets set up!")
                             }

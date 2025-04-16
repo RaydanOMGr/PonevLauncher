@@ -19,5 +19,5 @@ interface PlatformlessLogger {
 
 expect val logger: PlatformlessLogger
 expect val platformName: String
-expect val homeDir: Path
+expect val dataDir: Path
 expect val cacheDir: Path

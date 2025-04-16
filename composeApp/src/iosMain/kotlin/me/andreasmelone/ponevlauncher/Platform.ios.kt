@@ -61,5 +61,5 @@ private val fileManager = NSFileManager.defaultManager()
 private val documentUrls = fileManager.URLsForDirectory(NSDocumentDirectory, inDomains = NSUserDomainMask)
 private val documentDirectoryURL = documentUrls.firstOrNull() as NSURL?
 private val rootHomeDir = (documentDirectoryURL?.path ?: "").toPath()
-actual val homeDir: Path = rootHomeDir / "files"
+actual val dataDir: Path = rootHomeDir / "files"
 actual val cacheDir: Path = rootHomeDir / "cache"

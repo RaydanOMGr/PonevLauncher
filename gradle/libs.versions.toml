@@ -13,6 +13,8 @@ ktorfit = "2.5.0"
 download = "5.6.0"
 grgit = "4.1.1"
 okio = "3.10.2"
+chr = "1.0.0-alpha05"
+log4j = "2.24.3"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -29,6 +31,8 @@ ktor-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = 
 kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 ktorfit = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+log4j-slf4j = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 
 [bundles]
 ktor = ["ktor-client-cio", "ktor-client-content-negotiation", "ktor-client-core", "ktorfit", "ktor-json"]
@@ -44,3 +48,4 @@ grgit = { id = "org.ajoberstar.grgit", version.ref = "grgit" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+chr = { id = "org.jetbrains.compose.hot-reload", version.ref = "chr" }
