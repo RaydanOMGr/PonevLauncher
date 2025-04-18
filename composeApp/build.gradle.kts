@@ -1,3 +1,4 @@
+import android.databinding.tool.ext.capitalizeUS
 import org.ajoberstar.grgit.Grgit
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.ComposeHotRun
@@ -17,6 +18,7 @@ plugins {
     alias(libs.plugins.ktorfit)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.chr)
+    alias(libs.plugins.rust)
 }
 
 // Dependencies
@@ -118,19 +120,22 @@ kotlin {
     }
 
     compilerOptions {
-        freeCompilerArgs.addAll(listOf(
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi",
-            "-opt-in=kotlin.contracts.ExperimentalContracts",
-            "-opt-in=kotlin.ExperimentalStdlibApi",
-            "-opt-in=kotlin.concurrent.atomics.ExperimentalAtomicApi"
-        ))
+        freeCompilerArgs.addAll(
+            listOf(
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.DelicateCoroutinesApi",
+                "-opt-in=kotlin.contracts.ExperimentalContracts",
+                "-opt-in=kotlin.ExperimentalStdlibApi",
+                "-opt-in=kotlin.concurrent.atomics.ExperimentalAtomicApi"
+            )
+        )
     }
 }
 
 android {
     namespace = "me.andreasmelone.ponevlauncher"
     compileSdk = 35
+    ndkVersion = "29.0.13113456"
 
     lint {
         abortOnError = false
@@ -231,3 +236,24 @@ tasks.withType<ComposeHotRun> {
     mainClass = compose.desktop.application.mainClass
     jvmArgs("-Ddebug=true")
 }
+
+androidRust {
+    targets = listOf("arm", "arm64", "x86", "x86_64")
+    minimumSupportedRustVersion = "1.86.0"
+
+    module("ponev-jni") {
+        path = file("src/ponev-jni")
+    }
+}
+
+fun jniBuild(profile: String) {
+    tasks.register("buildJni${profile.capitalizeUS()}") {
+        val targets = listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        targets.forEach { target ->
+            dependsOn("build${profile.capitalizeUS()}Ponev-jniRust[$target]")
+        }
+    }
+}
+
+jniBuild("debug")
+jniBuild("release")

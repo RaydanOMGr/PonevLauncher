@@ -75,7 +75,7 @@ object MinecraftAssetDownloader {
                             val artifact = library.downloads.artifact
                             val target = dir / artifact.path
                             var assetDownloaded = false
-                            if(library.rules.isEmpty() || library.rules.any { it.action == "allow" && it.os.name == "linux" }) {
+                            if (library.rules.isEmpty() || library.rules.any { it.action == "allow" && it.os?.name == "linux" }) {
                                 assetDownloaded = downloadFile(target, artifact.sha1, artifact.url, artifact.size)
                             }
 

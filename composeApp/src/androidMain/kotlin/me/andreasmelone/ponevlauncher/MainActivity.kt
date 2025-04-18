@@ -10,6 +10,12 @@ import me.andreasmelone.ponevlauncher.utils.checkInternetConnection
 import okio.Path.Companion.toPath
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        init {
+            System.loadLibrary("ponev_jni")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val dataDir = getExternalFilesDir(null)?.absolutePath ?: filesDir.absolutePath.also { path ->
@@ -20,6 +26,8 @@ class MainActivity : ComponentActivity() {
         }
         dataDir0 = dataDir.toPath()
         cacheDir0 = cacheDir.toPath()
+
+        logger.info("Ponav", sayHello("rad"))
 
         runBlocking {
             checkInternetConnection()

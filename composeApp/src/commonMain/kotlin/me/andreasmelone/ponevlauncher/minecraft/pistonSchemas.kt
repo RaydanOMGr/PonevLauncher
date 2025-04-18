@@ -21,7 +21,7 @@ data class PistonVersionsResponse(
     val versions: List<PistonVersion>,
 )
 
-    @Serializable
+@Serializable
 data class PistonVersionResponse(
     val id: String,
     val downloads: PistonVersionDownloads,
@@ -32,7 +32,7 @@ data class PistonVersionResponse(
 @Serializable
 data class PistonVersionDownloads(
     val client: PistonVersionDownload,
-    val server: PistonVersionDownload?,
+    val server: PistonVersionDownload? = null,
 )
 
 @Serializable
@@ -81,10 +81,10 @@ data class PistonLibrary(
 @Serializable
 data class PistonLibraryRule(
     val action: String,
-    val os: PistonOsObject
+    val os: PistonOsObject? = null,
 )
 
 @Serializable
 data class PistonOsObject(
-    val name: String
+    val name: String,
 )
