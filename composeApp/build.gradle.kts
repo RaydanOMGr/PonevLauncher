@@ -242,7 +242,7 @@ androidRust {
     minimumSupportedRustVersion = "1.86.0"
 
     module("ponev-jni") {
-        path = file("src/ponev-jni")
+        path = rootProject.file("jni")
     }
 }
 
