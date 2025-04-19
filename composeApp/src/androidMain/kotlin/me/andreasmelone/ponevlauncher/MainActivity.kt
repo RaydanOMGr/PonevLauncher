@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         dataDir0 = dataDir.toPath()
         cacheDir0 = cacheDir.toPath()
 
-        logger.info("Ponav", sayHello("rad"))
+        logger.info("Ponev", sayHello("rad"))
 
         runBlocking {
             checkInternetConnection()
