@@ -1,7 +1,9 @@
+use libc::{
+    SIG_DFL, SIG_IGN, SIGHUP, SIGSEGV, c_int, sigaction, sigemptyset, sighandler_t,
+};
 use libloading::{Library, Symbol};
-use libc::{sigaction, sighandler_t, sigemptyset, SIG_DFL, SIG_IGN, SIGHUP, SIGSEGV, c_int, SIGABRT};
-use std::{ffi::CString, os::raw::c_char, ptr};
 use ndk_sys::NSIG;
+use std::{ffi::CString, os::raw::c_char, ptr};
 
 type JLILaunch = unsafe extern "C" fn(
     argc: i32,
@@ -19,7 +21,6 @@ type JLILaunch = unsafe extern "C" fn(
     javaw: u8,
     ergo: u8,
 ) -> i32;
-
 
 static const_jargs: *const *const c_char = ptr::null();
 static const_appclasspath: *const *const c_char = ptr::null();

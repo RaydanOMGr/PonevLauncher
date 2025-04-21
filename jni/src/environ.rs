@@ -2,10 +2,9 @@ use crate::BasicRenderWindow;
 use jni::sys::JavaVM;
 use ndk_sys::ANativeWindow;
 use std::cell::Cell;
-use std::sync::atomic::AtomicPtr;
 use std::sync::OnceLock;
 
-static PONEV_ENVIRON: OnceLock<AtomicPtr<Environ>> = OnceLock::new();
+static mut PONEV_ENVIRON: OnceLock<Environ> = OnceLock::new();
 
 #[derive(Default)]
 pub struct Environ {
@@ -17,11 +16,6 @@ pub struct Environ {
     pub saved_height: Cell<i32>,
 }
 
-pub fn get_environ() -> *mut Environ {
-    unsafe {
-        *PONEV_ENVIRON.get_or_init(|| {
-            let environ = Box::new(Environ::default());
-            AtomicPtr::new(Box::into_raw(environ))
-        }).as_ptr()
-    }
+pub fn get_environ() -> &'static mut Environ {
+    unsafe { PONEV_ENVIRON.get_mut_or_init(|| Environ::default()) }
 }

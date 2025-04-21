@@ -1,10 +1,14 @@
-use crate::gl::gl_bridge::{gl_get_current, gl_init, gl_init_context, gl_make_current, gl_setup_window, gl_swap_buffers, gl_swap_interval};
 use crate::GLRenderWindow;
+use crate::gl::gl_bridge::{
+    gl_get_current, gl_init, gl_init_context, gl_make_current, gl_setup_window, gl_swap_buffers,
+    gl_swap_interval,
+};
 use std::io::Error;
 use std::sync::OnceLock;
 
 pub type BrInit = unsafe fn() -> Result<(), Error>;
-pub type BrInitContext = unsafe fn(share: Option<&GLRenderWindow>) -> Result<GLRenderWindow, Box<dyn std::error::Error>>;
+pub type BrInitContext =
+    unsafe fn(share: Option<&GLRenderWindow>) -> Result<GLRenderWindow, Box<dyn std::error::Error>>;
 pub type BrMakeCurrent = unsafe fn(bundle: Option<&mut GLRenderWindow>);
 pub type BrGetCurrent = fn() -> *mut GLRenderWindow;
 pub type BrSwapBuffers = unsafe fn();
@@ -30,15 +34,17 @@ pub fn set_gl_bridge_tbl() {
 }
 
 pub unsafe fn br_init() -> Result<(), Error> {
-    (BR_INIT.get().unwrap().unwrap())()
+    unsafe { (BR_INIT.get().unwrap().unwrap())() }
 }
 
-pub unsafe fn br_init_context(share: Option<&GLRenderWindow>) -> Result<GLRenderWindow, Box<dyn std::error::Error>> {
-    (BR_INIT_CONTEXT.get().unwrap().unwrap())(share)
+pub unsafe fn br_init_context(
+    share: Option<&GLRenderWindow>,
+) -> Result<GLRenderWindow, Box<dyn std::error::Error>> {
+    unsafe { (BR_INIT_CONTEXT.get().unwrap().unwrap())(share) }
 }
 
 pub unsafe fn br_make_current(bundle: Option<&mut GLRenderWindow>) {
-    (BR_MAKE_CURRENT.get().unwrap().unwrap())(bundle)
+    unsafe { (BR_MAKE_CURRENT.get().unwrap().unwrap())(bundle) }
 }
 
 pub unsafe fn br_get_current() -> *const GLRenderWindow {
@@ -46,13 +52,13 @@ pub unsafe fn br_get_current() -> *const GLRenderWindow {
 }
 
 pub unsafe fn br_swap_buffers() {
-    (BR_SWAP_BUFFERS.get().unwrap().unwrap())()
+    unsafe { (BR_SWAP_BUFFERS.get().unwrap().unwrap())() }
 }
 
 pub unsafe fn br_setup_window() {
-    (BR_SETUP_WINDOW.get().unwrap().unwrap())()
+    unsafe { (BR_SETUP_WINDOW.get().unwrap().unwrap())() }
 }
 
 pub unsafe fn br_swap_interval(interval: i32) {
-    (BR_SWAP_INTERVAL.get().unwrap().unwrap())(interval)
+    unsafe { (BR_SWAP_INTERVAL.get().unwrap().unwrap())(interval) }
 }

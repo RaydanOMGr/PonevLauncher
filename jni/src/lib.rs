@@ -1,16 +1,15 @@
-pub mod util;
-pub mod gl;
+#![feature(once_cell_get_mut)]
+
 mod environ;
+pub mod gl;
 mod jre_launcher;
+pub mod util;
 
 use crate::gl::egl_loader::EGLFunctions;
 use egli::egl::{EGLConfig, EGLContext, EGLSurface, EGLint};
 use jni::objects::JString;
-use jni::sys::{jboolean, JNI_FALSE, JNI_TRUE};
-use jni::{
-    objects::JClass,
-    JNIEnv,
-};
+use jni::sys::{JNI_FALSE, JNI_TRUE, jboolean};
+use jni::{JNIEnv, objects::JClass};
 use libloading::Library;
 use macros::jni;
 use ndk_sys::ANativeWindow;
@@ -40,12 +39,28 @@ pub struct GLRenderWindow {
     pub config: EGLConfig,
     pub format: EGLint,
     pub context: EGLContext,
-    pub surface: EGLSurface
+    pub surface: EGLSurface,
 }
 
 impl GLRenderWindow {
-    pub fn new(state: i8, native_surface: Option<*mut ANativeWindow>, new_native_surface: Option<*mut ANativeWindow>, config: EGLConfig, format: EGLint, context: EGLContext, surface: EGLSurface) -> Self {
-        Self { state, native_surface, new_native_surface, config, format, context, surface }
+    pub fn new(
+        state: i8,
+        native_surface: Option<*mut ANativeWindow>,
+        new_native_surface: Option<*mut ANativeWindow>,
+        config: EGLConfig,
+        format: EGLint,
+        context: EGLContext,
+        surface: EGLSurface,
+    ) -> Self {
+        Self {
+            state,
+            native_surface,
+            new_native_surface,
+            config,
+            format,
+            context,
+            surface,
+        }
     }
 }
 
@@ -92,7 +107,7 @@ pub unsafe fn init_egl() -> Result<(), Error> {
         return Ok(());
     }
 
-    let functions = EGLFunctions::dlsym_egl().unwrap();
+    let functions = unsafe { EGLFunctions::dlsym_egl() }.unwrap();
     EGL_FUNCTIONS
         .set(functions)
         .map_err(|_| Error::new(ErrorKind::Other, "EGL already initialized!"))
