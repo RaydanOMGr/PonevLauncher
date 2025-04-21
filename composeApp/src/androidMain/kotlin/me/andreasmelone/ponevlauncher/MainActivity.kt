@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.runBlocking
+import me.andreasmelone.ponevlauncher.game.AndroidJVMLauncher
 import me.andreasmelone.ponevlauncher.utils.checkInternetConnection
 import okio.Path.Companion.toPath
 
@@ -26,8 +27,8 @@ class MainActivity : ComponentActivity() {
         }
         dataDir0 = dataDir.toPath()
         cacheDir0 = cacheDir.toPath()
-
-        logger.info("Ponav", sayHello("rad"))
+        jvmLauncher0 = AndroidJVMLauncher(this)
+        PonevJNI.initLogging()
 
         runBlocking {
             checkInternetConnection()

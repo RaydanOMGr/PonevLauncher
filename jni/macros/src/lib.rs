@@ -1,9 +1,6 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{
-    FnArg, ItemFn, LitStr, PatType, Type, parse::Parse,
-    parse::ParseStream, parse_macro_input
-};
+use syn::{parse::Parse, parse::ParseStream, parse_macro_input, FnArg, ItemFn, LitStr, PatType, Type};
 
 struct JniArgs {
     path: LitStr,

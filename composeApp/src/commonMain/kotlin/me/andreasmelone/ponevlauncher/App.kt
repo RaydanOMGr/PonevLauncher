@@ -87,7 +87,7 @@ fun App() {
                         enabled = isEnabled,
                         modifier = Modifier.padding(bottom = 10.dp)
                     ) {
-                        Text("Download Minecraft")
+                        Text("Launch Minecraft")
                     }
                 }
             }

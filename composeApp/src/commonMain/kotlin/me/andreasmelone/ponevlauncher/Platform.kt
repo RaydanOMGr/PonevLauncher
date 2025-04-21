@@ -1,5 +1,6 @@
 package me.andreasmelone.ponevlauncher
 
+import me.andreasmelone.ponevlauncher.launch.JVMLauncher
 import okio.Path
 
 // TODO replace String by String... or whatever varargs are in kotlin
@@ -17,7 +18,12 @@ interface PlatformlessLogger {
     fun verbose(tag: String, message: String, ex: Exception)
 }
 
+interface GameLauncher {
+    fun launchGame(): Int
+}
+
 expect val logger: PlatformlessLogger
 expect val platformName: String
 expect val dataDir: Path
 expect val cacheDir: Path
+expect val jvmLauncher: JVMLauncher

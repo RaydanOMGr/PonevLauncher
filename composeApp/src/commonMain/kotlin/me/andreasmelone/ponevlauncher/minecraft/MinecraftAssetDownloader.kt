@@ -51,7 +51,7 @@ object MinecraftAssetDownloader {
                             logger.debug(
                                 "AssetDownloader",
                                 if(assetDownloaded) "Downloaded asset $path ($percentage%)"
-                                else "Skipped asset ${path} ($percentage%)"
+                                else "Skipped asset $path ($percentage%)"
                             )
                         }
                     }

@@ -143,7 +143,7 @@ android {
 
     defaultConfig {
         applicationId = "me.andreasmelone.ponevlauncher"
-        minSdk = 26
+        minSdk = 21
         targetSdk = 35
         versionCode = dateSeconds
         versionName = appVersionName()

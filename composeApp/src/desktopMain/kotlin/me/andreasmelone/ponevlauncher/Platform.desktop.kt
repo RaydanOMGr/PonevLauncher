@@ -1,5 +1,6 @@
 package me.andreasmelone.ponevlauncher
 
+import me.andreasmelone.ponevlauncher.launch.JVMLauncher
 import me.andreasmelone.ponevlauncher.utils.exists
 import okio.Path
 import okio.Path.Companion.toPath
@@ -45,3 +46,9 @@ actual val cacheDir: Path = run {
         }
     }
 } / "ponev-launcher"
+
+actual val jvmLauncher: JVMLauncher = object : JVMLauncher {
+    override fun launch(dir: Path, args: List<String>): Int {
+        TODO("Not yet implemented")
+    }
+}

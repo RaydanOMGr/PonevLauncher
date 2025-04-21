@@ -2,6 +2,7 @@ package me.andreasmelone.ponevlauncher
 
 import android.os.Build
 import android.util.Log
+import me.andreasmelone.ponevlauncher.launch.JVMLauncher
 import okio.Path
 
 object AndroidLogger : PlatformlessLogger {
@@ -52,3 +53,5 @@ lateinit var dataDir0: Path
 lateinit var cacheDir0: Path
 actual val dataDir: Path get() = dataDir0
 actual val cacheDir: Path get() = cacheDir0
+lateinit var jvmLauncher0: JVMLauncher
+actual val jvmLauncher: JVMLauncher get() = jvmLauncher0

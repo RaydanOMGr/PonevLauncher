@@ -1,5 +1,6 @@
 package me.andreasmelone.ponevlauncher
 
+import me.andreasmelone.ponevlauncher.launch.JVMLauncher
 import okio.Path
 import okio.Path.Companion.toPath
 import platform.Foundation.NSDocumentDirectory
@@ -63,3 +64,8 @@ private val documentDirectoryURL = documentUrls.firstOrNull() as NSURL?
 private val rootHomeDir = (documentDirectoryURL?.path ?: "").toPath()
 actual val dataDir: Path = rootHomeDir / "files"
 actual val cacheDir: Path = rootHomeDir / "cache"
+actual val jvmLauncher: JVMLauncher = object : JVMLauncher {
+    override fun launch(dir: Path, args: List<String>): Int {
+        TODO("Not yet implemented")
+    }
+}
