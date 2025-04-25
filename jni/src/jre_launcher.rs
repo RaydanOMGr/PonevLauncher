@@ -1,16 +1,17 @@
+use crate::util::{convert_to_string_array, vec_to_c_array};
 use jni::errors::{Error, JniError};
-use jni::objects::{GlobalRef, JClass, JObject};
+use jni::objects::{GlobalRef, JClass, JObject, JObjectArray};
 use jni::sys::{jboolean, jclass, jint, JNI_FALSE, JNI_TRUE};
 use jni::{JNIEnv, JavaVM};
 use libc::{c_int, getpgrp, kill, pid_t, sigaction, sigemptyset, sighandler_t, SIGABRT, SIGHUP, SIGSEGV, SIG_DFL, SIG_IGN};
 use libloading::{Library, Symbol};
+use macros::jni;
 use ndk_sys::NSIG;
 use nix::sys::signal::Signal;
 use signal_hook::iterator::Signals;
 use std::io::{pipe, PipeReader, PipeWriter, Read, Write};
 use std::sync::{Arc, Mutex};
 use std::{ffi::CString, io, os::raw::c_char, process, ptr, thread};
-use macros::jni;
 
 type JLILaunch = extern "C" fn(
     argc: i32, argv: *const *const c_char,            /* main argc, argc */
@@ -259,4 +260,20 @@ fn setup_exit_method(mut env: JNIEnv, clazz: jclass, context: JObject) {
         let jclass_ref = unsafe { JClass::from_raw(global_ref.as_raw() as jclass) }; // let's pretend it's safe because it is supposed to be
         *lock = Some(jclass_ref);
     }
+}
+
+#[jni("me.andreasmelone.ponevlauncher.jaba.launchJVM")]
+fn java_launch_jvm(env: JNIEnv, clazz: jclass, args_array: JObjectArray) -> jint {
+    if args_array.is_null() {
+        println!("Args array null, returning");
+        //handle error
+        return 0;
+    }
+
+    let argc = env.get_array_length(&args_array).unwrap();
+    let argv = convert_to_string_array(env, args_array);
+
+    println!("Done processing args");
+
+    unsafe { launch_jvm(argc, vec_to_c_array(argv)) }
 }
