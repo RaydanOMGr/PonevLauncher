@@ -1,21 +1,21 @@
-use crate::environ::get_environ;
 use crate::gl::egl_loader::{EGL_OPENGL_ES2_BIT, EGL_PBUFFER_BIT, EGL_WINDOW_BIT};
-use crate::{BasicRenderWindow, GLRenderWindow, get_egl_functions, init_egl};
+use crate::{get_egl_functions, init_egl, BasicRenderWindow, GLRenderWindow};
 use egli::egl::{
-    EGL_ALPHA_SIZE, EGL_BAD_SURFACE, EGL_BLUE_SIZE, EGL_CONTEXT_CLIENT_VERSION,
-    EGL_DEFAULT_DISPLAY, EGL_DEPTH_SIZE, EGL_GREEN_SIZE, EGL_HEIGHT, EGL_NATIVE_VISUAL_ID,
-    EGL_NO_CONTEXT, EGL_NO_DISPLAY, EGL_NO_SURFACE, EGL_NONE, EGL_OPENGL_API, EGL_OPENGL_ES_API,
-    EGL_RED_SIZE, EGL_RENDERABLE_TYPE, EGL_SURFACE_TYPE, EGL_TRUE, EGL_WIDTH, EGLBoolean,
-    EGLConfig, EGLDisplay, EGLint,
+    EGLBoolean, EGLConfig, EGLDisplay, EGLint,
+    EGL_ALPHA_SIZE, EGL_BAD_SURFACE, EGL_BLUE_SIZE, EGL_CONTEXT_CLIENT_VERSION, EGL_DEFAULT_DISPLAY,
+    EGL_DEPTH_SIZE, EGL_GREEN_SIZE, EGL_HEIGHT, EGL_NATIVE_VISUAL_ID, EGL_NONE, EGL_NO_CONTEXT,
+    EGL_NO_DISPLAY, EGL_NO_SURFACE, EGL_OPENGL_API, EGL_OPENGL_ES_API, EGL_RED_SIZE, EGL_RENDERABLE_TYPE,
+    EGL_SURFACE_TYPE, EGL_TRUE, EGL_WIDTH,
 };
-use jni::JNIEnv;
 use jni::objects::{JClass, JObject, JValue};
+use jni::JNIEnv;
 use macros::jni;
 use ndk_sys::{ANativeWindow_acquire, ANativeWindow_release, ANativeWindow_setBuffersGeometry};
 use std::io::{Error, ErrorKind};
 use std::sync::atomic::AtomicPtr;
 use std::sync::{Arc, Mutex};
 use std::{env, ptr};
+use crate::environ::get_environ;
 
 static EGL_DISPLAY: Mutex<Option<AtomicPtr<EGLDisplay>>> = Mutex::new(None);
 thread_local! {
@@ -223,7 +223,7 @@ pub unsafe fn gl_swap_surface(bundle: &mut GLRenderWindow) {
 }
 
 pub unsafe fn gl_make_current(bundle: Option<&mut GLRenderWindow>) {
-    let environ = get_environ();
+    let mut environ = get_environ();
     let egl = get_egl_functions().unwrap();
     let display_guard = EGL_DISPLAY.lock().unwrap();
     let display = unsafe { *display_guard.as_ref().unwrap().as_ptr() };
@@ -242,19 +242,17 @@ pub unsafe fn gl_make_current(bundle: Option<&mut GLRenderWindow>) {
     let mut unwrapped = bundle.unwrap();
     let mut has_set_main_window = false;
 
-    if (*environ).main_window_bundle.take().is_none() {
+    if (*environ).main_window_bundle.is_none() {
         let ptr: *const GLRenderWindow = unwrapped;
-        (*environ)
-            .main_window_bundle
-            .set(Some(ptr as *mut BasicRenderWindow));
+        (*environ).main_window_bundle = Some(ptr as *mut BasicRenderWindow);
         println!(
             "Main window bundle is now {:?}",
-            (*environ).main_window_bundle.get_mut()
+            (*environ).main_window_bundle
         );
         // main_window_bundle->new_native_surface = environ->pojav_window;
         let main_window_bundle = (*environ).main_window_bundle.take().unwrap();
         unsafe {
-            (*main_window_bundle).new_native_surface = Some((*environ).pojav_window.get().unwrap());
+            (*main_window_bundle).new_native_surface = Some((*environ).pojav_window.unwrap());
         }
 
         has_set_main_window = true;
@@ -277,11 +275,11 @@ pub unsafe fn gl_make_current(bundle: Option<&mut GLRenderWindow>) {
             CURRENT_BUNDLE.with(|bundle| *bundle.lock().unwrap() = None);
         } else {
             if has_set_main_window {
-                let main_window = (*environ).main_window_bundle.get().unwrap();
+                let main_window = (*environ).main_window_bundle.unwrap();
                 (*main_window).new_native_surface = *ptr::null_mut();
                 //gl_render_window_t*
                 gl_swap_surface(&mut *(main_window as *mut GLRenderWindow));
-                (*environ).main_window_bundle.set(None);
+                (*environ).main_window_bundle = None;
             }
             let err = (*egl).get_error();
             println!("eglMakeCurrent returned with error: {err}");
@@ -330,11 +328,11 @@ pub unsafe fn gl_swap_buffers() {
 pub unsafe fn gl_setup_window() {
     let environ = get_environ();
 
-    if let Some(window_bundle) = (*environ).main_window_bundle.get() {
+    if let Some(window_bundle) = (*environ).main_window_bundle {
         println!("Main window bundle is not NULL, changing state");
         unsafe {
             (*window_bundle).state = STATE_RENDERER_NEW_WINDOW;
-            (*window_bundle).new_native_surface = Some((*environ).pojav_window.get().unwrap()); // :concern: otherwise type mismatch
+            (*window_bundle).new_native_surface = Some((*environ).pojav_window.unwrap());
         }
     }
 }
@@ -343,7 +341,7 @@ pub unsafe fn gl_swap_interval(mut swap_interval: i32) {
     let egl = get_egl_functions().unwrap();
     let display_guard = EGL_DISPLAY.lock().unwrap();
     let display = unsafe { *display_guard.as_ref().unwrap().as_ptr() };
-    if (*get_environ()).force_vsync.get() {
+    if get_environ().force_vsync {
         swap_interval = 1;
     }
 

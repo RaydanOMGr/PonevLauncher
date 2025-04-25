@@ -1,4 +1,3 @@
-use crate::environ::get_environ;
 use crate::gl::bridge_tbl::{
     br_get_current, br_init, br_init_context, br_make_current, br_setup_window, br_swap_buffers,
     br_swap_interval, set_gl_bridge_tbl,
@@ -14,6 +13,7 @@ use ndk_sys::{
     ANativeWindow_getWidth, ANativeWindow_release, ANativeWindow_setBuffersGeometry,
 };
 use std::env;
+use crate::environ::get_environ;
 
 const AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM: i32 = 2;
 
@@ -38,7 +38,7 @@ unsafe fn ponev_terminate() {
 #[jni("me.andreasmelone.ponevlauncher.jaba.JREUtils.setupBridgeWindow")]
 pub fn setup_bridge_window(env: JNIEnv, _class: JClass, surface: JObject) {
     unsafe {
-        get_environ().pojav_window.set(Some(ANativeWindow_fromSurface(env.get_raw(), *surface)));
+        get_environ().pojav_window = Some(ANativeWindow_fromSurface(env.get_raw(), *surface));
     }
 }
 
@@ -46,8 +46,8 @@ pub fn setup_bridge_window(env: JNIEnv, _class: JClass, surface: JObject) {
 pub unsafe fn release_bridge_window(env: JNIEnv, _class: JClass) {
     unsafe {
         let environ = get_environ();
-        ANativeWindow_release((*environ).pojav_window.get().unwrap());
-        (*environ).pojav_window.set(None);
+        ANativeWindow_release((*environ).pojav_window.unwrap());
+        (*environ).pojav_window = None;
     }
 }
 
@@ -57,7 +57,7 @@ fn ponev_get_current_context() -> unsafe fn() -> *const GLRenderWindow {
 
 unsafe fn ponev_init_opengl() {
     let force_vsync = env::var("FORCE_VSYNC").unwrap();
-    (*get_environ()).force_vsync.set(force_vsync == "true");
+    get_environ().force_vsync = force_vsync == "true";
 
     set_gl_bridge_tbl();
 
@@ -95,26 +95,26 @@ unsafe fn ponev_create_context(context_src: *mut GLRenderWindow) -> GLRenderWind
 
 unsafe fn ponev_init() -> bool {
     let environ = get_environ();
-    let glfw_thread_env = get_attached_env((*environ).runtime_java_vm_ptr.get().unwrap());
+    let glfw_thread_env = get_attached_env((*environ).runtime_java_vm_ptr.unwrap());
     if let None = glfw_thread_env {
         return false;
     }
 
-    let window = (*environ).pojav_window.get().unwrap();
+    let window = (*environ).pojav_window.unwrap();
     unsafe {
         ANativeWindow_acquire(window);
-        (*environ).saved_width.set(ANativeWindow_getWidth(window));
-        (*environ).saved_height.set(ANativeWindow_getHeight(window));
+        (*environ).saved_width = ANativeWindow_getWidth(window);
+        (*environ).saved_height = ANativeWindow_getHeight(window);
     }
 
     unsafe {
         ANativeWindow_setBuffersGeometry(
             window,
-            (*environ).saved_width.get(),
-            (*environ).saved_height.get(),
+            (*environ).saved_width,
+            (*environ).saved_height,
             AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM,
         );
-        update_monitor_size((*environ).saved_width.get(), (*environ).saved_height.get());
+        update_monitor_size((*environ).saved_width, (*environ).saved_height);
         ponev_init_opengl();
     }
 
